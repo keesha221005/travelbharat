@@ -3,13 +3,11 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getPlaces, getCategories, getStates, getCities } from '../../lib/api';
-import { useLanguage } from '../../lib/LanguageContext';
 import PlaceCard from '../../components/PlaceCard';
 
 const PAGE_SIZE = 24;
 
 function SearchInner() {
-  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -85,37 +83,37 @@ function SearchInner() {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-14">
-      <p className="label-eyebrow mb-3">{t('searchTheIndex')}</p>
-      <h1 className="font-display text-5xl text-ink mb-10">{t('findADestination')}</h1>
+      <p className="label-eyebrow mb-3">Search the index</p>
+      <h1 className="font-display text-5xl text-ink mb-10">Find a destination</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div>
-          <label htmlFor="search-input" className="sr-only">{t('searchByNameLabel')}</label>
+          <label htmlFor="search-input" className="sr-only">Search by place name</label>
           <input
             id="search-input"
             type="text"
-            placeholder={t('searchPlaceholder')}
+            placeholder="Search by name…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full border border-ink bg-paper px-4 py-2.5 font-body text-ink placeholder:text-ink-soft"
           />
         </div>
         <div>
-          <label htmlFor="state-select" className="sr-only">{t('filterByStateLabel')}</label>
+          <label htmlFor="state-select" className="sr-only">Filter by state</label>
           <select
             id="state-select"
             value={state}
             onChange={(e) => setState(e.target.value)}
             className="w-full border border-ink bg-paper px-4 py-2.5 font-body text-ink"
           >
-            <option value="">{t('allStates')}</option>
+            <option value="">All states</option>
             {states.map((s) => (
               <option key={s.id} value={s.slug}>{s.name}</option>
             ))}
           </select>
         </div>
         <div>
-          <label htmlFor="city-select" className="sr-only">{t('filterByCityLabel')}</label>
+          <label htmlFor="city-select" className="sr-only">Filter by city</label>
           <select
             id="city-select"
             value={city}
@@ -123,21 +121,21 @@ function SearchInner() {
             className="w-full border border-ink bg-paper px-4 py-2.5 font-body text-ink disabled:opacity-50"
             disabled={!state}
           >
-            <option value="">{state ? t('allCities') : t('selectStateFirst')}</option>
+            <option value="">{state ? 'All cities' : 'Select a state first'}</option>
             {cities.map((c) => (
               <option key={c.id} value={c.slug}>{c.name}</option>
             ))}
           </select>
         </div>
         <div>
-          <label htmlFor="category-select" className="sr-only">{t('filterByCategoryLabel')}</label>
+          <label htmlFor="category-select" className="sr-only">Filter by category</label>
           <select
             id="category-select"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="w-full border border-ink bg-paper px-4 py-2.5 font-body text-ink"
           >
-            <option value="">{t('allCategories')}</option>
+            <option value="">All categories</option>
             {categories.map((c) => (
               <option key={c.id} value={c.slug}>{c.name}</option>
             ))}
@@ -174,19 +172,19 @@ function SearchInner() {
       <div aria-live="polite" aria-atomic="true">
         {!loading && !error && (
           <p className="label-eyebrow mb-6">
-            {total} {total === 1 ? t('placeFound') : t('placesFound')}
-            {totalPages > 1 && ` — ${t('pageWord')} ${page} ${t('ofWord')} ${totalPages}`}
+            {total} {total === 1 ? 'place found' : 'places found'}
+            {totalPages > 1 && ` — page ${page} of ${totalPages}`}
           </p>
         )}
 
-        {loading && <p className="label-eyebrow">{t('searching')}</p>}
+        {loading && <p className="label-eyebrow">	Searching…</p>}
         {error && (
           <p className="border border-madder text-madder px-4 py-3 label-eyebrow">
             {error}
           </p>
         )}
         {!loading && !error && places.length === 0 && (
-          <p className="label-eyebrow">{t('noPlacesMatch')}</p>
+          <p className="label-eyebrow">No places match your search.</p>
         )}
       </div>
 
@@ -203,7 +201,7 @@ function SearchInner() {
             disabled={page === 1}
             className="border border-ink px-4 py-2 font-body text-sm hover:bg-ink hover:text-paper transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-ink"
           >
-            {t('previous')}
+            ← Previous
           </button>
 
           <PageNumbers page={page} totalPages={totalPages} onGoTo={goToPage} />
@@ -213,7 +211,7 @@ function SearchInner() {
             disabled={page === totalPages}
             className="border border-ink px-4 py-2 font-body text-sm hover:bg-ink hover:text-paper transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-ink"
           >
-            {t('next')}
+            Next →
           </button>
         </div>
       )}

@@ -142,4 +142,14 @@ export const adminChangePassword = (token, currentPassword, newPassword) => requ
   body: JSON.stringify({ currentPassword, newPassword })
 });
 
+export const adminForgotPassword = (email) => request('/admin/auth/forgot-password', {
+  method: 'POST',
+  body: JSON.stringify({ email })
+});
+
+export const adminResetPassword = (token, newPassword) => request('/admin/auth/reset-password', {
+  method: 'POST',
+  body: JSON.stringify({ token, newPassword })
+});
+
 export { API_BASE };

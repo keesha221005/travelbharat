@@ -1,7 +1,6 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useLanguage } from '../lib/LanguageContext';
 
 const PlaceMapClient = dynamic(() => import('./PlaceMapClient'), {
   ssr: false,
@@ -14,7 +13,6 @@ const PlaceMapClient = dynamic(() => import('./PlaceMapClient'), {
 
 export default function PlaceMap({ latitude, longitude, name, mapLink }) {
   const hasCoordinates = Boolean(latitude && longitude);
-  const { t } = useLanguage();
 
   if (!hasCoordinates && !mapLink) return null;
 
@@ -30,7 +28,7 @@ export default function PlaceMap({ latitude, longitude, name, mapLink }) {
           rel="noreferrer"
           className="label-eyebrow text-madder hover:underline whitespace-nowrap"
         >
-          {t('openInMaps')}
+          Open in Maps →
         </a>
       </div>
     );

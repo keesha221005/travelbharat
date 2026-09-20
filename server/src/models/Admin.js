@@ -32,8 +32,18 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: true,
       field: 'is_active'
+    },
+    resetPasswordToken: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      field: 'reset_password_token'
+    },
+    resetPasswordExpires: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      field: 'reset_password_expires'
     }
-  }, {
+   }, {
     tableName: 'admins',
     hooks: {
       beforeCreate: async (admin) => {

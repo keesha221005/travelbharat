@@ -2,7 +2,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { getState } from '../../../lib/api';
-import T from '../../../components/T';
 
 export const revalidate = 60;
 
@@ -54,12 +53,12 @@ export default async function StatePage({ params }) {
       <div className="rule-thick mb-10" />
 
       <div className="flex items-baseline justify-between mb-8">
-        <h2 className="font-display text-2xl text-ink"><T k="cities" /></h2>
+        <h2 className="font-display text-2xl text-ink">Cities</h2>
         <span className="label-eyebrow">{state.cities?.length || 0} entries</span>
       </div>
 
       {(!state.cities || state.cities.length === 0) && (
-        <p className="label-eyebrow"><T k="noCitiesYet" /></p>
+        <p className="label-eyebrow">No cities added for this state yet.</p>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

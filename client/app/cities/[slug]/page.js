@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getCity, getPlaces } from '../../../lib/api';
 import PlaceCard from '../../../components/PlaceCard';
-import T from '../../../components/T';
 
 export const revalidate = 60;
 
@@ -65,12 +64,12 @@ export default async function CityPage({ params }) {
       <div className="rule-thick mb-10" />
 
       <div className="flex items-baseline justify-between mb-8">
-        <h2 className="font-display text-2xl text-ink"><T k="placesToVisit" /></h2>
+        <h2 className="font-display text-2xl text-ink">Places to visit</h2>
         <span className="label-eyebrow">{places.length} entries</span>
       </div>
 
       {places.length === 0 && (
-       <p className="label-eyebrow"><T k="noPlacesYet" /></p>
+       <p className="label-eyebrow">No published places for this city yet.</p>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

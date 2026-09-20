@@ -5,7 +5,6 @@ import { getPlace, getNearbyPlaces } from '../../../lib/api';
 import CategoryBadge from '../../../components/CategoryBadge';
 import PlaceMap from '../../../components/PlaceMap';
 import FeaturedDestinations from '../../../components/FeaturedDestinations';
-import T from '../../../components/T';
 
 export const revalidate = 30;
 
@@ -57,12 +56,12 @@ export default async function PlacePage({ params }) {
   const gallery = place.images?.filter((i) => i.id !== cover?.id) || [];
 
   const facts = [
-    { label: 'Best time to visit', i18nKey: 'bestTimeToVisit', value: place.bestTimeToVisit },
-    { label: 'Entry fee', i18nKey: 'entryFee', value: place.entryFee },
-    { label: 'Timings', i18nKey: 'timingsLabel', value: place.timings }
+    { label: 'Best time to visit', value: place.bestTimeToVisit },
+    { label: 'Entry fee', value: place.entryFee },
+    { label: 'Timings', value: place.timings }
   ].filter((f) => f.value);
 
- const jsonLd = {
+  const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'TouristAttraction',
     name: place.name,
@@ -131,14 +130,14 @@ export default async function PlacePage({ params }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Main content */}
         <div className="lg:col-span-2">
-          <h2 className="font-display text-2xl text-ink mb-4"><T k="about" /></h2>
+          <h2 className="font-display text-2xl text-ink mb-4">About</h2>
           <p className="font-body text-ink-soft leading-relaxed whitespace-pre-line mb-8">
             {place.description}
           </p>
 
           {place.historicalSignificance && (
             <>
-              <h2 className="font-display text-2xl text-ink mb-4"><T k="historicalSignificance" /></h2>
+              <h2 className="font-display text-2xl text-ink mb-4">Historical significance</h2>
               <p className="font-body text-ink-soft leading-relaxed whitespace-pre-line mb-8">
                 {place.historicalSignificance}
               </p>
@@ -147,7 +146,7 @@ export default async function PlacePage({ params }) {
 
           {gallery.length > 0 && (
             <>
-              <h2 className="font-display text-2xl text-ink mb-4"><T k="gallery" /></h2>
+              <h2 className="font-display text-2xl text-ink mb-4">Gallery</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {gallery.map((img) => (
                   <div key={img.id} className="relative aspect-square bg-paper-dim overflow-hidden">
@@ -166,7 +165,7 @@ export default async function PlacePage({ params }) {
 
           {(place.latitude && place.longitude || place.mapLink) && (
             <>
-              <h2 className="font-display text-2xl text-ink mb-4"><T k="location" /></h2>
+              <h2 className="font-display text-2xl text-ink mb-4">Location</h2>
               <PlaceMap
                 latitude={place.latitude ? Number(place.latitude) : null}
                 longitude={place.longitude ? Number(place.longitude) : null}
@@ -180,14 +179,14 @@ export default async function PlacePage({ params }) {
         {/* Facts sidebar */}
         <aside>
           <div className="border border-ink p-6 mb-6">
-            <p className="label-eyebrow mb-4"><T k="quickFacts" /></p>
+            <p className="label-eyebrow mb-4">Quick facts</p>
             {facts.length === 0 && (
-              <p className="font-body text-sm text-ink-soft"><T k="noDetailsRecorded" /></p>
+              <p className="font-body text-sm text-ink-soft">No details recorded yet.</p>
             )}
             <dl className="space-y-4">
               {facts.map((f) => (
                 <div key={f.label}>
-                  <dt className="label-eyebrow mb-0.5"><T k={f.i18nKey} fallback={f.label} /></dt>
+                  <dt className="label-eyebrow mb-0.5">{f.label}</dt>
                   <dd className="font-mono text-sm text-ink">{f.value}</dd>
                 </div>
               ))}
@@ -196,7 +195,7 @@ export default async function PlacePage({ params }) {
 
           {place.nearbyPlaces?.length > 0 && (
             <div className="border border-line p-6">
-              <p className="label-eyebrow mb-4"><T k="nearbyAttractions" /></p>
+              <p className="label-eyebrow mb-4">Nearby attractions</p>
               <ul className="space-y-3">
                 {place.nearbyPlaces.map((np) => (
                   <li key={np.id} className="flex items-baseline justify-between gap-2">
@@ -219,7 +218,7 @@ export default async function PlacePage({ params }) {
       {nearbyPlaces.length > 0 && (
         <div className="mt-14">
           <div className="rule-thick mb-10" />
-          <h2 className="font-display text-3xl text-ink mb-8"><T k="nearbyDestinations" /></h2>
+          <h2 className="font-display text-3xl text-ink mb-8">Nearby destinations</h2>
           <FeaturedDestinations places={nearbyPlaces} />
         </div>
       )}

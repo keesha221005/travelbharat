@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { Admin } = require('../models');
 const { success, error } = require('../utils/apiResponse');
+const { sendPasswordResetEmail } = require('../utils/mailer');
 
 function generateToken(admin) {
   return jwt.sign(
@@ -68,10 +70,79 @@ async function changePassword(req, res) {
   return success(res, 200, 'Password changed successfully.');
 }
 
+// POST /api/admin/auth/forgot-password  { email }
+async function forgotPassword(req, res) {
+  const { email } = req.body;
+
+  if (!email) {
+    return error(res, 400, 'Email is required.');
+  }
+
+  const admin = await Admin.findOne({ where: { email } });
+
+  // Always return the same success message whether or not the email exists —
+  // this prevents attackers from using this endpoint to discover which
+  // emails have admin accounts.
+  const genericMessage = 'If an account exists for that email, a password reset link has been sent.';
+
+  if (!admin || !admin.isActive) {
+    return success(res, 200, genericMessage);
+  }
+
+  const rawToken = crypto.randomBytes(32).toString('hex');
+  const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+  admin.resetPasswordToken = hashedToken;
+  admin.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+  await admin.save();
+
+  const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+  const resetUrl = `${clientUrl}/admin/reset-password?token=${rawToken}`;
+
+  try {
+    await sendPasswordResetEmail(admin.email, resetUrl);
+  } catch (err) {
+    console.error('Failed to send password reset email:', err);
+    return error(res, 500, 'Could not send reset email. Please try again later.');
+  }
+
+  return success(res, 200, genericMessage);
+}
+
+// POST /api/admin/auth/reset-password  { token, newPassword }
+async function resetPassword(req, res) {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return error(res, 400, 'Token and new password are both required.');
+  }
+
+  if (newPassword.length < 8) {
+    return error(res, 400, 'New password must be at least 8 characters long.');
+  }
+
+  const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+  const admin = await Admin.findOne({
+    where: { resetPasswordToken: hashedToken }
+  });
+
+  if (!admin || !admin.resetPasswordExpires || admin.resetPasswordExpires < new Date()) {
+    return error(res, 400, 'This reset link is invalid or has expired. Please request a new one.');
+  }
+
+  admin.passwordHash = newPassword; // re-hashed automatically by the model hook
+  admin.resetPasswordToken = null;
+  admin.resetPasswordExpires = null;
+  await admin.save();
+
+  return success(res, 200, 'Password reset successfully. You can now sign in with your new password.');
+}
+
 // GET /api/admin/auth/me
 async function me(req, res) {
   const { id, name, email, role } = req.admin;
   return success(res, 200, 'Current admin profile', { id, name, email, role });
 }
 
-module.exports = { login, me, changePassword };
+module.exports = { login, me, changePassword, forgotPassword, resetPassword };

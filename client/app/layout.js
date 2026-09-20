@@ -2,7 +2,6 @@ import { Fraunces, Work_Sans, IBM_Plex_Mono } from 'next/font/google';
 import './globals.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { LanguageProvider } from '../lib/LanguageContext';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -35,15 +34,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${workSans.variable} ${plexMono.variable}`}>
-      <body className="font-body min-h-screen flex flex-col">
-        <LanguageProvider>
-          <a href="#main-content" className="skip-link">
-            Skip to main content
-          </a>
-          <Header />
-          <main id="main-content" className="flex-1">{children}</main>
-          <Footer />
-        </LanguageProvider>
+            <body className="font-body min-h-screen flex flex-col">
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
+        <Header />
+        <main id="main-content" className="flex-1">{children}</main>
+        <Footer />
       </body>
     </html>
   );

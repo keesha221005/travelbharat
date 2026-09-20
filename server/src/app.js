@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const routes = require('./routes');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
+const { apiLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
 
@@ -24,7 +25,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // API routes
-app.use('/api', routes);
+app.use('/api',  apiLimiter, routes);
 
 app.get('/', (req, res) => {
   res.json({ success: true, message: 'Welcome to the TravelBharat API' });

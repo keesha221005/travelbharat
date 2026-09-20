@@ -1,7 +1,10 @@
 'use client';
 
+'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { adminLogin } from '../../../lib/api';
 import { saveSession } from '../../../lib/auth';
 
@@ -69,6 +72,10 @@ export default function AdminLoginPage() {
           {loading ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
+
+      <p className="label-eyebrow mt-6">
+        <Link href="/admin/forgot-password" className="hover:text-madder">Forgot password?</Link>
+      </p>
     </div>
   );
 }

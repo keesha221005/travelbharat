@@ -100,6 +100,7 @@ async function getPlaceBySlug(req, res) {
   return success(res, 200, 'Place fetched successfully', place);
 }
 
+// GET /api/places/:slug/nearby?limit=6
 async function getNearbyPlaces(req, res) {
   const { limit = 6 } = req.query;
 
@@ -145,14 +146,22 @@ async function getNearbyPlaces(req, res) {
   return success(res, 200, 'Nearby places fetched successfully', withDistance.slice(0, Number(limit)));
 }
 
-// GET /api/admin/places?state=&city=&category=&status=&page=&limit=
+// GET /api/admin/places?state=&city=&category=&status=&search=&page=&limit=
 // Unlike the public listing, this returns places of ANY status (draft/published/archived)
 async function getAllPlacesAdmin(req, res) {
   const {
-    state, city, category, status, page = 1, limit = 50
+    state, city, category, status, search, page = 1, limit = 50
   } = req.query;
 
   const where = {};
+
+  if (search) {
+    where[Op.or] = [
+      { name: { [Op.like]: `%${search}%` } },
+      { description: { [Op.like]: `%${search}%` } }
+    ];
+  }
+
   const include = [
     { model: State, as: 'state', attributes: ['id', 'name', 'slug'] },
     { model: City, as: 'city', attributes: ['id', 'name', 'slug'] },
@@ -413,7 +422,7 @@ module.exports = {
   verifyPlace,
   deletePlace,
   uploadPlaceImages,
+  addPlaceImageByUrl,
   deletePlaceImage,
-  addNearbyAttraction,
-  addPlaceImageByUrl
+  addNearbyAttraction
 };

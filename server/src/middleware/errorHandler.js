@@ -2,7 +2,7 @@ const { error } = require('../utils/apiResponse');
 
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, next) {
-  console.error(err);
+  console.error(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl} —`, err);
 
   // Sequelize validation errors
   if (err.name === 'SequelizeValidationError' || err.name === 'SequelizeUniqueConstraintError') {
